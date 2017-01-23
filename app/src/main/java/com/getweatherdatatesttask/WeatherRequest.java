@@ -27,12 +27,7 @@ public class WeatherRequest {
             connection.connect();
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-                responseTextJSON = stringBuilder.toString();
+                responseTextJSON = readAllLine(reader);
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -51,6 +46,15 @@ public class WeatherRequest {
             }
         }
         return responseTextJSON;
+    }
+
+    private String readAllLine(BufferedReader reader) throws IOException {
+        String line;
+        StringBuilder stringBuilder = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        return stringBuilder.toString();
     }
 
     public enum WeatherRequestType {
