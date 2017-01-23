@@ -2,12 +2,15 @@ package com.getweatherdatatesttask;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -25,9 +28,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
         initializeUIMap();
         moveCameraDefault();
+
+        mMap = googleMap;
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                String currentPosition = String.format(Locale.getDefault(), "latitude = %f, longitude = %f", latLng.latitude, latLng.longitude);
+                Toast toast = Toast.makeText(getApplicationContext(), currentPosition, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
     }
 
     private void initializeUIMap() {
