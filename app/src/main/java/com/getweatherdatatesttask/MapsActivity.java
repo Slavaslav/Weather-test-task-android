@@ -2,19 +2,21 @@ package com.getweatherdatatesttask;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +30,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         initializeUIMap();
         moveCameraDefault();
 
-        mMap = googleMap;
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                String currentPosition = String.format(Locale.getDefault(), "latitude = %f, longitude = %f", latLng.latitude, latLng.longitude);
-                Toast toast = Toast.makeText(getApplicationContext(), currentPosition, Toast.LENGTH_LONG);
-                toast.show();
+                addMarkerToMapOnClick(latLng);
             }
         });
     }
@@ -50,5 +50,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void moveCameraDefault() {
         LatLng kiev = new LatLng(50.431622, 30.516645);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(kiev));
+    }
+
+    private void addMarkerToMapOnClick(LatLng latLng) {
+        String currentPosition = String.format(Locale.getDefault(), "%f, %f", latLng.latitude, latLng.longitude);
+        if (marker == null) {
+            marker = mMap.addMarker(new MarkerOptions().position(latLng));
+        } else {
+            marker.setPosition(latLng);
+        }
+        marker.setTitle(currentPosition);
+        marker.showInfoWindow();
     }
 }
