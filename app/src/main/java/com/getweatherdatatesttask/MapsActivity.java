@@ -83,7 +83,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected Void doInBackground(Object... objects) {
             if (weatherRequestType == WeatherRequest.WeatherRequestType.BY_COORDINATES) {
                 WeatherRequest weatherRequest = new WeatherRequest();
-                String weatherDataTextJSON = weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
+                String weatherTextJSON = weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
+                Weather weather = WeatherJSONParser.parseWeatherFromJson(weatherTextJSON);
             }
             return null;
         }
