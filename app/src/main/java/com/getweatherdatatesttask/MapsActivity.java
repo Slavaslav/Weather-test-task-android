@@ -35,9 +35,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         initializeUIMap();
         moveCameraDefault();
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void onMapLongClick(LatLng latLng) {
                 addMarkerToMapOnClick(latLng);
             }
         });
