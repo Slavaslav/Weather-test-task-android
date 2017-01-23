@@ -1,5 +1,6 @@
 package com.getweatherdatatesttask;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -34,11 +35,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         initializeUIMap();
         moveCameraDefault();
-
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 addMarkerToMapOnClick(latLng);
+                showWeatherData(latLng);
             }
         });
     }
@@ -63,5 +64,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         marker.setTitle(currentPosition);
         marker.showInfoWindow();
+    }
+
+    private void showWeatherData(LatLng latLng) {
+        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(WeatherRequest.WeatherRequestType.BY_COORDINATES);
+        weatherRequestTask.execute(latLng);
+    }
+
+    private class WeatherRequestTask extends AsyncTask<Object, Void, Void> {
+
+        private WeatherRequest.WeatherRequestType weatherRequestType;
+
+        WeatherRequestTask(WeatherRequest.WeatherRequestType weatherRequestType) {
+            this.weatherRequestType = weatherRequestType;
+        }
+
+        @Override
+        protected Void doInBackground(Object... objects) {
+            if (weatherRequestType == WeatherRequest.WeatherRequestType.BY_COORDINATES) {
+                WeatherRequest weatherRequest = new WeatherRequest();
+                weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
+            }
+            return null;
+        }
     }
 }
