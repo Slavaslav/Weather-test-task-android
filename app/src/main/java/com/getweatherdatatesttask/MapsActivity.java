@@ -1,11 +1,13 @@
 package com.getweatherdatatesttask;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -88,6 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TextView humidityTextView = (TextView) popupView.findViewById(R.id.humidity_text_view);
         TextView windSpeedTextView = (TextView) popupView.findViewById(R.id.wind_speed_text_view);
         TextView windDegreesTextView = (TextView) popupView.findViewById(R.id.wind_degrees_text_view);
+        Button closePopupButton = (Button) popupView.findViewById(R.id.close_popup_button);
 
         latitudeTextView.setText(String.format(Locale.getDefault(), "%.2f", weather.getLatitude()));
         longitudeTextView.setText(String.format(Locale.getDefault(), "%.2f", weather.getLongitude()));
@@ -98,8 +101,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weather.getWindSpeed()));
         windDegreesTextView.setText(String.format(Locale.getDefault(), "%.0f", weather.getWindDegrees()));
 
-        PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // setBackgroundDrawable and setOutsideTouchable for close popup when click outside
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        popupWindow.setOutsideTouchable(true);
         popupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
+
+        closePopupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
     }
 
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
