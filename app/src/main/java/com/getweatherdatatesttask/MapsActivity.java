@@ -84,8 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Weather weather = null;
             if (weatherRequestType == WeatherRequest.WeatherRequestType.BY_COORDINATES) {
                 WeatherRequest weatherRequest = new WeatherRequest();
-                String weatherTextJSON = weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
-                weather = WeatherJSONParser.parseWeatherFromJson(weatherTextJSON);
+                String weatherJSON = weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
+                weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
             }
             return weather;
         }
