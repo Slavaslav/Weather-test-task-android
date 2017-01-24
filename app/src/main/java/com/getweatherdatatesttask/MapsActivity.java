@@ -63,14 +63,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addMarkerToMapOnClick(LatLng latLng) {
-        String currentPosition = String.format(Locale.getDefault(), "%f, %f", latLng.latitude, latLng.longitude);
+        String currentPosition = String.format(Locale.getDefault(), "%.2f, %.2f", latLng.latitude, latLng.longitude);
         if (marker == null) {
             marker = mMap.addMarker(new MarkerOptions().position(latLng));
         } else {
             marker.setPosition(latLng);
         }
         marker.setTitle(currentPosition);
-        marker.showInfoWindow();
     }
 
     private void showWeatherData(LatLng latLng) {
