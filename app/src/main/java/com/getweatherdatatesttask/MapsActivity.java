@@ -67,24 +67,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showWeatherData(LatLng latLng) {
-        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(WeatherRequest.WeatherRequestType.BY_COORDINATES);
+        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(WeatherHttpRequest.RequestType.BY_COORDINATES);
         weatherRequestTask.execute(latLng);
     }
 
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
 
-        private WeatherRequest.WeatherRequestType weatherRequestType;
+        private WeatherHttpRequest.RequestType requestType;
 
-        WeatherRequestTask(WeatherRequest.WeatherRequestType weatherRequestType) {
-            this.weatherRequestType = weatherRequestType;
+        WeatherRequestTask(WeatherHttpRequest.RequestType requestType) {
+            this.requestType = requestType;
         }
 
         @Override
         protected Weather doInBackground(Object... objects) {
             Weather weather = null;
-            if (weatherRequestType == WeatherRequest.WeatherRequestType.BY_COORDINATES) {
-                WeatherRequest weatherRequest = new WeatherRequest();
-                String weatherJSON = weatherRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
+            if (requestType == WeatherHttpRequest.RequestType.BY_COORDINATES) {
+                WeatherHttpRequest weatherHttpRequest = new WeatherHttpRequest();
+                String weatherJSON = weatherHttpRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
                 weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
             }
             return weather;

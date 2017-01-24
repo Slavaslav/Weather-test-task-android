@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 
-public class WeatherRequest {
+public class WeatherHttpRequest {
     private static final String QUERY_BY_COORDINATES_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=ru";
     private static final String API_KEY = "&APPID=230817152f335fdaca4e9ba99a186825";
 
@@ -57,7 +57,7 @@ public class WeatherRequest {
         return stringBuilder.toString();
     }
 
-    public enum WeatherRequestType {
+    public enum RequestType {
         BY_COORDINATES, BY_PLACE
     }
 }
