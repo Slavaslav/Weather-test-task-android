@@ -1,8 +1,13 @@
 package com.getweatherdatatesttask;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +30,7 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private GoogleMap mMap;
     private Marker marker;
 
@@ -32,9 +39,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        Button currentLocationButton = (Button) findViewById(R.id.current_location_button);
+        currentLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getWeatherDataByUserLocation();
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    private void getWeatherDataByUserLocation() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    private boolean checkLocationPermission() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                PERMISSIONS_REQUEST_ACCESS_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    getWeatherDataByUserLocation();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "You must allow access to geolocation data", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        }
     }
 
     @Override
