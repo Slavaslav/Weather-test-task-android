@@ -173,4 +173,13 @@
         android:layout_below="@id/wind_speed_title_text_view"
         android:layout_toRightOf="@id/wind_degrees_text_view"
         android:text="°" />
+
+    <Button
+        android:id="@+id/close_popup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_below="@id/wind_degrees_title_text_view"
+        android:layout_centerHorizontal="true"
+        android:text="Close"
+        android:textSize="12dp" />
 </RelativeLayout>
