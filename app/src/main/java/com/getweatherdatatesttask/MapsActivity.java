@@ -3,9 +3,11 @@ package com.getweatherdatatesttask;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -74,6 +76,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         weatherRequestTask.execute(latLng);
     }
 
+    private void showPopupWindow(Weather weather) {
+        View popupView = getLayoutInflater().inflate(R.layout.weather_popup_window, null);
+        View rootElement = popupView.findViewById(R.id.map_root_element);
+
+        TextView latitudeTextView = (TextView) popupView.findViewById(R.id.latitude_text_view);
+        TextView longitudeTextView = (TextView) popupView.findViewById(R.id.longitude_text_view);
+        TextView weatherDescriptionTextView = (TextView) popupView.findViewById(R.id.weather_description_text_view);
+        TextView temperatureTextView = (TextView) popupView.findViewById(R.id.temperature_text_view);
+        TextView pressureTextView = (TextView) popupView.findViewById(R.id.pressure_text_view);
+        TextView humidityTextView = (TextView) popupView.findViewById(R.id.humidity_text_view);
+        TextView windSpeedTextView = (TextView) popupView.findViewById(R.id.wind_speed_text_view);
+        TextView windDegreesTextView = (TextView) popupView.findViewById(R.id.wind_degrees_text_view);
+
+        latitudeTextView.setText(String.format(Locale.getDefault(), "%.2f", weather.getLatitude()));
+        longitudeTextView.setText(String.format(Locale.getDefault(), "%.2f", weather.getLongitude()));
+        weatherDescriptionTextView.setText(weather.getWeatherDescription());
+        temperatureTextView.setText(String.format(Locale.getDefault(), "%.1f", weather.getTemperature()));
+        pressureTextView.setText(String.format(Locale.getDefault(), "%.0f", weather.getPressure()));
+        humidityTextView.setText(String.valueOf(weather.getHumidity()));
+        windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weather.getWindSpeed()));
+        windDegreesTextView.setText(String.format(Locale.getDefault(), "%.0f", weather.getWindDegrees()));
+
+        PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
+    }
+
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
 
         private WeatherHttpRequest.RequestType requestType;
@@ -95,14 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
-            showPopupWindow();
+            showPopupWindow(weather);
         }
-    }
-
-    private void showPopupWindow() {
-        View popupView = getLayoutInflater().inflate(R.layout.weather_popup_window, null);
-        View rootElement = popupView.findViewById(R.id.map_root_element);
-        PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAsDropDown(rootElement, 200, 200);
     }
 }

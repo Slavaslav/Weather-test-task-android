@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_root_element"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:id="@+id/map_root_element">
+    android:background="@drawable/input_text_background"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/location_outer_block"
@@ -15,12 +16,15 @@
             android:id="@+id/location_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location:" />
+            android:text="Location:"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/latitude_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" />
 
         <TextView
             android:id="@+id/longitude_text_view"
@@ -28,50 +32,145 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/weather_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/location_outer_block"
-        android:text="Weather" />
+        android:layout_marginTop="5dp"
+        android:text="Weather"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/weather_description_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weather_text_view"
+        android:text="Description:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/weather_description_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weather_text_view" />
+        android:layout_below="@id/weather_text_view"
+        android:layout_toRightOf="@id/weather_description_title_text_view"
+        android:paddingLeft="5dp" />
+
+    <TextView
+        android:id="@+id/temperature_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weather_description_title_text_view"
+        android:text="Temperature:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/temperature_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weather_text_view"
-        android:layout_toRightOf="@id/weather_description_text_view" />
+        android:layout_below="@id/weather_description_title_text_view"
+        android:layout_toRightOf="@id/temperature_title_text_view"
+        android:paddingLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weather_description_title_text_view"
+        android:layout_toRightOf="@id/temperature_text_view"
+        android:text="°C" />
+
+    <TextView
+        android:id="@+id/pressure_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temperature_title_text_view"
+        android:text="Pressure:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/pressure_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weather_description_text_view" />
+        android:layout_below="@id/temperature_title_text_view"
+        android:layout_toRightOf="@id/pressure_title_text_view"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temperature_title_text_view"
+        android:layout_toRightOf="@id/pressure_text_view"
+        android:text="mm Hg" />
+
+    <TextView
+        android:id="@+id/humidity_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pressure_title_text_view"
+        android:text="Humidity:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/humidity_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weather_description_text_view"
-        android:layout_toRightOf="@id/pressure_text_view" />
+        android:layout_below="@id/pressure_title_text_view"
+        android:layout_toRightOf="@id/humidity_title_text_view"
+        android:paddingLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pressure_title_text_view"
+        android:layout_toRightOf="@id/humidity_text_view"
+        android:text="%" />
+
+    <TextView
+        android:id="@+id/wind_speed_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/humidity_title_text_view"
+        android:text="Wind speed:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/wind_speed_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pressure_text_view" />
+        android:layout_below="@id/humidity_title_text_view"
+        android:layout_toRightOf="@id/wind_speed_title_text_view"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/humidity_title_text_view"
+        android:layout_toRightOf="@id/wind_speed_text_view"
+        android:text="m/s" />
+
+    <TextView
+        android:id="@+id/wind_degrees_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wind_speed_title_text_view"
+        android:text="Wind degrees:"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/wind_degrees_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pressure_text_view"
-        android:layout_toRightOf="@id/humidity_text_view" />
+        android:layout_below="@id/wind_speed_title_text_view"
+        android:layout_toRightOf="@id/wind_degrees_title_text_view"
+        android:paddingLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wind_speed_title_text_view"
+        android:layout_toRightOf="@id/wind_degrees_text_view"
+        android:text="°" />
 </RelativeLayout>
