@@ -13,7 +13,7 @@ public class WeatherHttpRequest {
     private static final String QUERY_BY_COORDINATES_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=ru";
     private static final String API_KEY = "&APPID=230817152f335fdaca4e9ba99a186825";
 
-    public String getWeatherDataByCoordinates(LatLng latLng) {
+    public static String getWeatherDataByCoordinates(LatLng latLng) {
         double latitude = latLng.latitude;
         double longitude = latLng.longitude;
         String urlText = String.format(Locale.getDefault(), QUERY_BY_COORDINATES_URL, latitude, longitude);
@@ -48,7 +48,7 @@ public class WeatherHttpRequest {
         return responseTextJSON;
     }
 
-    private String readAllLine(BufferedReader reader) throws IOException {
+    private static String readAllLine(BufferedReader reader) throws IOException {
         String line;
         StringBuilder stringBuilder = new StringBuilder();
         while ((line = reader.readLine()) != null) {
