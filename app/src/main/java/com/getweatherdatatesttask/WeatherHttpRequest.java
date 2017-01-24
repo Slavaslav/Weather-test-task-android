@@ -20,7 +20,7 @@ public class WeatherHttpRequest {
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;
-        String responseTextJSON = null;
+        String responseTextJSON = "";
         try {
             URL url = new URL(urlText.concat(API_KEY));
             connection = (HttpURLConnection) url.openConnection();
@@ -28,8 +28,6 @@ public class WeatherHttpRequest {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 responseTextJSON = readAllLine(reader);
-            } else {
-                throw new UnsupportedOperationException();
             }
         } catch (IOException e) {
             e.printStackTrace();

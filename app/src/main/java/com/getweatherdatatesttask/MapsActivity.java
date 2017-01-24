@@ -127,7 +127,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Weather weather = null;
             if (requestType == WeatherHttpRequest.RequestType.BY_COORDINATES) {
                 String weatherJSON = WeatherHttpRequest.getWeatherDataByCoordinates((LatLng) objects[0]);
-                weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
+                // if weatherJSON is empty - something went wrong
+                if (!weatherJSON.isEmpty()) {
+                    weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
+                }
             }
             return weather;
         }
@@ -135,7 +138,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
-            showPopupWindow(weather);
+            if (weather != null) {
+                showPopupWindow(weather);
+            } else {
+                // show error
+            }
         }
     }
 }
