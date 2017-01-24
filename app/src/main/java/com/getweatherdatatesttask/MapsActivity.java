@@ -3,6 +3,9 @@ package com.getweatherdatatesttask;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -88,5 +91,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return weather;
         }
+
+        @Override
+        protected void onPostExecute(Weather weather) {
+            super.onPostExecute(weather);
+            showPopupWindow();
+        }
+    }
+
+    private void showPopupWindow() {
+        View popupView = getLayoutInflater().inflate(R.layout.weather_popup_window, null);
+        View rootElement = popupView.findViewById(R.id.map_root_element);
+        PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAsDropDown(rootElement, 200, 200);
     }
 }
