@@ -191,6 +191,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showPopupWindow(weather);
             } else {
                 // show error
+                Toast toast = Toast.makeText(getApplicationContext(), "Something went wrong. Please, try again", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     }
