@@ -3,10 +3,12 @@ package com.getweatherdatatesttask;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
@@ -17,6 +19,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,11 +33,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
+    boolean googleApiClientIsConnected = false;
     private GoogleMap mMap;
     private Marker marker;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +50,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getWeatherDataByUserLocation();
+                showWeatherDataByUserLocation();
             }
         });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
     }
 
-    private void getWeatherDataByUserLocation() {
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    private void showWeatherDataByUserLocation() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
             hideDefaultLocationButton();
+            LatLng latLng = getLastLocation();
+            if (latLng != null) {
+                showWeatherData(latLng);
+            }
         } else {
             requestLocationPermission();
         }
+    }
+
+    private LatLng getLastLocation() {
+        LatLng latLng = null;
+        if (googleApiClientIsConnected) {
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (mLastLocation != null) {
+                latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            }
+        }
+        return latLng;
     }
 
     private void hideDefaultLocationButton() {
@@ -81,7 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getWeatherDataByUserLocation();
+                    showWeatherDataByUserLocation();
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "You must allow access to geolocation data", Toast.LENGTH_SHORT);
                     toast.show();
@@ -166,6 +210,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        googleApiClientIsConnected = true;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // empty
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // empty
+    }
+
 
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
 
