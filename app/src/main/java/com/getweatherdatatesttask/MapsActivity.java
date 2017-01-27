@@ -66,12 +66,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private boolean checkLocationPermission() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 PERMISSIONS_REQUEST_ACCESS_LOCATION);
     }
 
@@ -80,8 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getWeatherDataByUserLocation();
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "You must allow access to geolocation data", Toast.LENGTH_SHORT);
