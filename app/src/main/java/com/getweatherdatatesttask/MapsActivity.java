@@ -86,6 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             hideDefaultLocationButton();
             LatLng latLng = getLastLocation();
             if (latLng != null) {
+                moveCamera(latLng, 15);
                 showWeatherData(latLng);
             }
         } else {
@@ -138,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         initializeUIMap();
-        moveCameraDefault();
+        moveCamera(null, 0);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -154,9 +155,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         uiSettings.setMapToolbarEnabled(false);
     }
 
-    private void moveCameraDefault() {
-        LatLng kiev = new LatLng(50.431622, 30.516645);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kiev, 8));
+    private void moveCamera(LatLng latLng, int zoom) {
+        if (latLng == null) {
+            latLng = new LatLng(50.431622, 30.516645);
+            zoom = 8;
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void addMarkerToMapOnClick(LatLng latLng) {
