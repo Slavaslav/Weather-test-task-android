@@ -55,9 +55,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getWeatherDataByUserLocation() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
+            hideDefaultLocationButton();
         } else {
             requestLocationPermission();
         }
+    }
+
+    private void hideDefaultLocationButton() {
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     private boolean checkLocationPermission() {
