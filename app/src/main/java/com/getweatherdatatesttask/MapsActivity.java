@@ -41,6 +41,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker marker;
     private GoogleApiClient mGoogleApiClient;
     private Button currentLocationButton;
+    private PopupWindow weatherDescriptionPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void hideMarker() {
-        if (marker.isVisible()) {
+        if (marker != null && marker.isVisible()) {
             marker.setVisible(false);
         }
     }
@@ -223,18 +224,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weather.getWindSpeed()));
         windDegreesTextView.setText(String.format(Locale.getDefault(), "%.0f", weather.getWindDegrees()));
 
-        final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weatherDescriptionPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         // setBackgroundDrawable and setOutsideTouchable for close popup when click outside
-        popupWindow.setBackgroundDrawable(new ColorDrawable());
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
+        weatherDescriptionPopupWindow.setBackgroundDrawable(new ColorDrawable());
+        weatherDescriptionPopupWindow.setOutsideTouchable(true);
+        weatherDescriptionPopupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
 
         closePopupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                popupWindow.dismiss();
+                weatherDescriptionPopupWindow.dismiss();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (weatherDescriptionPopupWindow != null && weatherDescriptionPopupWindow.isShowing()) {
+            weatherDescriptionPopupWindow.dismiss();
+        }
+        super.onDestroy();
     }
 
     @Override

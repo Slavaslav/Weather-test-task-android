@@ -3,8 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--main-->
     <color name="search_text_hint_color">#32000000</color>
     <color name="current_location_button_color">#78aaaaaa</color>
     <color name="current_location_button_color_selected">#780099cc</color>
     <color name="current_location_button_color_pressed">#64ffffff</color>
+
+    <!--popup-->
+    <color name="close_popup_button_background">#32000000</color>
+    <color name="close_popup_button_background_pressed">#1e000000</color>
 </resources>
