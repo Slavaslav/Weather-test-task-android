@@ -41,7 +41,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker marker;
     private GoogleApiClient mGoogleApiClient;
     private Button currentLocationButton;
-    private PopupWindow weatherDescriptionPopupWindow;
+    private PopupWindow weatherPopupWindow;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void showMarker() {
+        if (marker != null && !marker.isVisible()) {
+            marker.setVisible(true);
+        }
+    }
+
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -91,11 +98,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void showWeatherDataByUserLocation() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
-            selectCurrentLocationButton();
             hideDefaultLocationButton();
             hideMarker();
             LatLng latLng = getLastLocation();
             if (latLng != null) {
+                selectCurrentLocationButton();
                 moveCamera(latLng, 15);
                 showWeatherData(latLng);
             }
@@ -119,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng getLastLocation() {
         LatLng latLng = null;
         if (googleApiClientIsConnected) {
-            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
             if (mLastLocation != null) {
                 latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -193,6 +200,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             marker.setPosition(latLng);
         }
+        showMarker();
         marker.setTitle(currentPosition);
     }
 
@@ -224,24 +232,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weather.getWindSpeed()));
         windDegreesTextView.setText(String.format(Locale.getDefault(), "%.0f", weather.getWindDegrees()));
 
-        weatherDescriptionPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        weatherPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         // setBackgroundDrawable and setOutsideTouchable for close popup when click outside
-        weatherDescriptionPopupWindow.setBackgroundDrawable(new ColorDrawable());
-        weatherDescriptionPopupWindow.setOutsideTouchable(true);
-        weatherDescriptionPopupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
+        weatherPopupWindow.setBackgroundDrawable(new ColorDrawable());
+        weatherPopupWindow.setOutsideTouchable(true);
+        weatherPopupWindow.showAtLocation(rootElement, Gravity.CENTER, 0, 0);
 
         closePopupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                weatherDescriptionPopupWindow.dismiss();
+                weatherPopupWindow.dismiss();
             }
         });
     }
 
     @Override
     protected void onDestroy() {
-        if (weatherDescriptionPopupWindow != null && weatherDescriptionPopupWindow.isShowing()) {
-            weatherDescriptionPopupWindow.dismiss();
+        if (weatherPopupWindow != null && weatherPopupWindow.isShowing()) {
+            weatherPopupWindow.dismiss();
         }
         super.onDestroy();
     }
@@ -260,7 +268,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // empty
     }
-
 
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
 
