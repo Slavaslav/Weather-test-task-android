@@ -10,30 +10,29 @@ import java.net.URL;
 import java.util.Locale;
 
 public class WeatherHttpRequest {
-    private static final String QUERY_BY_COORDINATES_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=ru";
-    private static final String API_KEY = "&APPID=230817152f335fdaca4e9ba99a186825";
 
     public static String getWeatherDataByCoordinates(LatLng latLng) {
         double latitude = latLng.latitude;
         double longitude = latLng.longitude;
-        String urlText = String.format(Locale.getDefault(), QUERY_BY_COORDINATES_URL, latitude, longitude);
+        // Locale.US for show a dot between the integer and decimal part not comma
+        String urlRequest = String.format(Locale.US, "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&APPID=9d600ee30b100b0a83a006ebdedd14ad", latitude, longitude);
 
-        HttpURLConnection connection = null;
+        HttpURLConnection httpConnection = null;
         BufferedReader reader = null;
         String responseTextJSON = "";
         try {
-            URL url = new URL(urlText.concat(API_KEY));
-            connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            URL url = new URL(urlRequest);
+            httpConnection = (HttpURLConnection) url.openConnection();
+            int responseCode = httpConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                reader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
                 responseTextJSON = readAllLine(reader);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (connection != null) {
-                connection.disconnect();
+            if (httpConnection != null) {
+                httpConnection.disconnect();
             }
             if (reader != null) {
                 try {
