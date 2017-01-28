@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="search_text_hint_color">#32000000</color>
+    <color name="current_location_button_color">#78aaaaaa</color>
+    <color name="current_location_button_color_selected">#780099cc</color>
+    <color name="current_location_button_color_pressed">#64ffffff</color>
 </resources>

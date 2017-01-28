@@ -36,17 +36,18 @@ import java.util.Locale;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
-    boolean googleApiClientIsConnected = false;
+    private boolean googleApiClientIsConnected = false;
     private GoogleMap mMap;
     private Marker marker;
     private GoogleApiClient mGoogleApiClient;
+    private Button currentLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        Button currentLocationButton = (Button) findViewById(R.id.current_location_button);
+        currentLocationButton = (Button) findViewById(R.id.current_location_button);
         currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +69,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private void hideMarker() {
+        if (marker.isVisible()) {
+            marker.setVisible(false);
+        }
+    }
+
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -83,7 +90,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void showWeatherDataByUserLocation() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
+            selectCurrentLocationButton();
             hideDefaultLocationButton();
+            hideMarker();
             LatLng latLng = getLastLocation();
             if (latLng != null) {
                 moveCamera(latLng, 15);
@@ -91,6 +100,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } else {
             requestLocationPermission();
+        }
+    }
+
+    private void selectCurrentLocationButton() {
+        if (!currentLocationButton.isSelected()) {
+            currentLocationButton.setSelected(true);
+        }
+    }
+
+    private void unselectCurrentLocationButton() {
+        if (currentLocationButton.isSelected()) {
+            currentLocationButton.setSelected(false);
         }
     }
 
@@ -143,6 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                unselectCurrentLocationButton();
                 addMarkerToMapOnClick(latLng);
                 showWeatherData(latLng);
             }
