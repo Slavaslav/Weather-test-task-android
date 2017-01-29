@@ -51,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button currentLocationButton;
     private PopupWindow weatherPopupWindow;
     private Location mLastLocation;
+    private AutoCompleteTextView autoCompleteSearchPlaces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +78,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
         }
 
-        AutoCompleteTextView autoCompleteSearchPlaces = (AutoCompleteTextView) findViewById(R.id.map_search_edit_text);
+        autoCompleteSearchPlaces = (AutoCompleteTextView) findViewById(R.id.map_search_edit_text);
         autoCompleteSearchPlaces.setThreshold(2);
         autoCompleteSearchPlaces.setAdapter(new PlacesSearchAutoCompleteAdapter(this));
         autoCompleteSearchPlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                clearAutoCompleteSearch();
+                hideSoftKeyboard();
                 showWeatherByPlace(adapterView, position);
             }
         });
@@ -289,6 +292,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 weatherPopupWindow.dismiss();
             }
         });
+    }
+
+    private void hideSoftKeyboard() {
+        UtilsUI.hideSoftKeyboard(this);
+    }
+
+    private void clearAutoCompleteSearch() {
+        if (autoCompleteSearchPlaces.getText().length() > 0) {
+            autoCompleteSearchPlaces.setText("");
+        }
     }
 
     private class WeatherRequestTask extends AsyncTask<Void, Void, Weather> {
