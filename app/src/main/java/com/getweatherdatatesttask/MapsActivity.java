@@ -50,7 +50,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
     private Button currentLocationButton;
     private PopupWindow weatherPopupWindow;
-    private Location mLastLocation;
     private AutoCompleteTextView autoCompleteSearchPlaces;
 
     @Override
@@ -213,14 +212,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showWeather(LatLng latLng, RequestType requestType) {
-        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES, requestType, latLng);
+        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(requestType, latLng);
         weatherRequestTask.execute();
     }
 
     private LatLng getLastLocation() {
         LatLng latLng = null;
         if (googleApiClientIsConnected) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
             if (mLastLocation != null) {
                 latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -306,12 +305,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private class WeatherRequestTask extends AsyncTask<Void, Void, Weather> {
 
-        private HttpRequestClient.RequestType requestType;
-        private RequestType type;
-        private LatLng latLng;
+        private final RequestType type;
+        private final LatLng latLng;
 
-        WeatherRequestTask(HttpRequestClient.RequestType requestType, RequestType type, LatLng latLng) {
-            this.requestType = requestType;
+        WeatherRequestTask(RequestType type, LatLng latLng) {
             this.type = type;
             this.latLng = latLng;
         }
@@ -319,12 +316,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected Weather doInBackground(Void... voids) {
             Weather weather = null;
-            if (requestType == HttpRequestClient.RequestType.BY_COORDINATES) {
-                String weatherJSON = HttpRequestClient.getWeatherDataByCoordinates(latLng);
-                // if weatherJSON is empty - something went wrong
-                if (!weatherJSON.isEmpty()) {
-                    weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
-                }
+            String weatherJSON = HttpRequestClient.getWeatherDataByCoordinates(latLng);
+            // if weatherJSON is empty - something went wrong
+            if (!weatherJSON.isEmpty()) {
+                weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
             }
             return weather;
         }

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaceJSONParser {
+class PlaceJSONParser {
     public static List<Place> parsePlaceFromJson(String placeTextJSON) {
         List<Place> places = null;
         try {

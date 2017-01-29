@@ -66,8 +66,4 @@ public class HttpRequestClient {
         }
         return stringBuilder.toString();
     }
-
-    public enum RequestType {
-        BY_COORDINATES, BY_PLACE
-    }
 }

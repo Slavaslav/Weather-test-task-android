@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PlacesSearchAutoCompleteAdapter extends BaseAdapter implements Filterable {
 
-    private Context context;
+    private final Context context;
     private List<Place> places = new ArrayList<>();
 
     public PlacesSearchAutoCompleteAdapter(Context context) {
