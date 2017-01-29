@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getweatherdatatesttask.HttpRequestClient;
 import com.getweatherdatatesttask.R;
@@ -58,7 +59,12 @@ public class PlacesSearchAutoCompleteAdapter extends BaseAdapter implements Filt
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     String getPlacesJson = HttpRequestClient.getPlacesDataByQuery(constraint.toString());
-                    if (!getPlacesJson.isEmpty()) {
+                    if (getPlacesJson.equals("error")) {
+                        Toast toast = new Toast(context);
+                        toast.setText("Something went wrong. Please, try again");
+                        toast.setDuration(Toast.LENGTH_LONG);
+                        toast.show();
+                    } else {
                         places = PlaceJSONParser.parsePlaceFromJson(getPlacesJson);
                     }
                     filterResults.values = places;

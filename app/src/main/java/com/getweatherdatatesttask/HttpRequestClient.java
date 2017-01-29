@@ -13,7 +13,11 @@ public class HttpRequestClient {
 
     public static String getPlacesDataByQuery(String query) {
         String urlRequest = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&types=geocode&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo", query);
-        return getJsonTextFromURL(urlRequest);
+        String queryResponse = getJsonTextFromURL(urlRequest);
+        if (queryResponse.isEmpty()) {
+            queryResponse = "error";
+        }
+        return queryResponse;
     }
 
     public static String getPlaceDescriptionByQuery(String query) {
