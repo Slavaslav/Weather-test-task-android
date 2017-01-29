@@ -1,4 +1,4 @@
-package com.getweatherdatatesttask;
+package com.getweatherdatatesttask.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;

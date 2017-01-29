@@ -1,4 +1,4 @@
-package com.getweatherdatatesttask;
+package com.getweatherdatatesttask.Weather;
 
 public class Weather {
     private float latitude;

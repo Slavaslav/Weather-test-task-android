@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getweatherdatatesttask.Place.PlacesSearchAutoCompleteAdapter;
+import com.getweatherdatatesttask.Weather.Weather;
+import com.getweatherdatatesttask.Weather.WeatherJSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
