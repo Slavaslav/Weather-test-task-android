@@ -58,7 +58,9 @@ public class PlacesSearchAutoCompleteAdapter extends BaseAdapter implements Filt
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     String getPlacesJson = HttpRequestClient.getPlacesDataByQuery(constraint.toString());
-                    places = PlaceJSONParser.parsePlaceFromJson(getPlacesJson);
+                    if (!getPlacesJson.isEmpty()) {
+                        places = PlaceJSONParser.parsePlaceFromJson(getPlacesJson);
+                    }
                     filterResults.values = places;
                     filterResults.count = places.size();
                 }

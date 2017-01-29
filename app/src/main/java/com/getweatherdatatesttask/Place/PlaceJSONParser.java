@@ -1,5 +1,7 @@
 package com.getweatherdatatesttask.Place;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +14,8 @@ public class PlaceJSONParser {
         List<Place> places = null;
         try {
             places = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(placeTextJSON);
-            JSONArray placesJsonArray = jsonObject.getJSONArray("predictions");
+            JSONObject rootJsonObject = new JSONObject(placeTextJSON);
+            JSONArray placesJsonArray = rootJsonObject.getJSONArray("predictions");
 
             for (int i = 0; i < placesJsonArray.length(); i++) {
                 JSONObject placeJsonObject = placesJsonArray.getJSONObject(i);
@@ -30,5 +32,22 @@ public class PlaceJSONParser {
             e.printStackTrace();
         }
         return places;
+    }
+
+    public static LatLng parsePlaceCoordinatesFromJson(String placeDescriptionJson) {
+
+        LatLng placeCoordinate = null;
+        try {
+            JSONObject rootJsonObject = new JSONObject(placeDescriptionJson);
+            JSONObject resultJsonObject = rootJsonObject.getJSONObject("result");
+            JSONObject geometryJsonObject = resultJsonObject.getJSONObject("geometry");
+            JSONObject locationJsonObject = geometryJsonObject.getJSONObject("location");
+            Double lat = Double.valueOf(locationJsonObject.getString("lat"));
+            Double lng = Double.valueOf(locationJsonObject.getString("lng"));
+            placeCoordinate = new LatLng(lat, lng);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return placeCoordinate;
     }
 }

@@ -21,9 +21,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getweatherdatatesttask.Place.Place;
+import com.getweatherdatatesttask.Place.PlaceGetCoordinatesTask;
 import com.getweatherdatatesttask.Place.PlacesSearchAutoCompleteAdapter;
 import com.getweatherdatatesttask.Weather.Weather;
 import com.getweatherdatatesttask.Weather.WeatherJSONParser;
+import com.getweatherdatatesttask.Weather.WeatherShowable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -38,7 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, WeatherShowable {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private boolean googleApiClientIsConnected = false;
@@ -82,7 +85,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         autoCompleteSearchPlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // show weather
+                Place place = (Place) adapterView.getItemAtPosition(position);
+                PlaceGetCoordinatesTask placeGetCoordinatesTask = new PlaceGetCoordinatesTask(MapsActivity.this);
+                placeGetCoordinatesTask.execute(place.getPlaceId());
             }
         });
     }
@@ -120,7 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (latLng != null) {
                 selectCurrentLocationButton();
                 moveCamera(latLng, 15);
-                showWeatherData(latLng);
+                showWeather(latLng);
             }
         } else {
             requestLocationPermission();
@@ -190,7 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapLongClick(LatLng latLng) {
                 unselectCurrentLocationButton();
                 addMarkerToMapOnClick(latLng);
-                showWeatherData(latLng);
+                showWeather(latLng);
             }
         });
     }
@@ -220,7 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker.setTitle(currentPosition);
     }
 
-    private void showWeatherData(LatLng latLng) {
+    public void showWeather(LatLng latLng) {
         WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES);
         weatherRequestTask.execute(latLng);
     }
