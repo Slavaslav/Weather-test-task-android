@@ -14,11 +14,14 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getweatherdatatesttask.Place.PlacesSearchAutoCompleteAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -69,6 +72,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
         }
 
+        AutoCompleteTextView autoCompleteSearchPlaces = (AutoCompleteTextView) findViewById(R.id.map_search_edit_text);
+
+        autoCompleteSearchPlaces.setThreshold(2);
+        autoCompleteSearchPlaces.setAdapter(new PlacesSearchAutoCompleteAdapter(this));
+
+        autoCompleteSearchPlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // show weather
+            }
+        });
     }
 
     private void hideMarker() {
