@@ -12,9 +12,13 @@ import java.util.Locale;
 public class HttpRequestClient {
 
     public static final String ERROR = "error";
+    public static final String GOOGLE_API_URL = "https://maps.googleapis.com/maps/api/place/";
+    public static final String GOOGLE_API_KEY = "&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo";
+    public static final String WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&APPID=9d600ee30b100b0a83a006ebdedd14ad";
+
 
     public static String getPlacesDataByQuery(String query) {
-        String urlRequest = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&types=geocode&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo", query);
+        String urlRequest = String.format("%sautocomplete/json?input=%s&types=geocode%s", GOOGLE_API_URL, query, GOOGLE_API_KEY);
         String queryResponse = getJsonTextFromURL(urlRequest);
         if (queryResponse.isEmpty()) {
             queryResponse = ERROR;
@@ -23,7 +27,7 @@ public class HttpRequestClient {
     }
 
     public static String getPlaceDescriptionByQuery(String query) {
-        String urlRequest = String.format("https://maps.googleapis.com/maps/api/place/details/json?placeid=%s&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo", query);
+        String urlRequest = String.format("%sdetails/json?placeid=%s%s", GOOGLE_API_URL, query, GOOGLE_API_KEY);
         return getJsonTextFromURL(urlRequest);
     }
 
@@ -31,7 +35,7 @@ public class HttpRequestClient {
         double latitude = latLng.latitude;
         double longitude = latLng.longitude;
         // Locale.US for show a dot between the integer and decimal part not comma
-        String urlRequest = String.format(Locale.US, "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&APPID=9d600ee30b100b0a83a006ebdedd14ad", latitude, longitude);
+        String urlRequest = String.format(Locale.US, WEATHER_API_URL, latitude, longitude);
         return getJsonTextFromURL(urlRequest);
     }
 
