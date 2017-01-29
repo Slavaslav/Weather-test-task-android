@@ -7,10 +7,10 @@ import com.getweatherdatatesttask.MapsActivity;
 import com.getweatherdatatesttask.Weather.WeatherShowable;
 import com.google.android.gms.maps.model.LatLng;
 
-public class PlaceGetCoordinatesTask extends AsyncTask<String, Void, LatLng> implements WeatherShowable {
+public class PlaceRequestCoordinatesTask extends AsyncTask<String, Void, LatLng> implements WeatherShowable {
     private MapsActivity activity;
 
-    public PlaceGetCoordinatesTask(MapsActivity activity) {
+    public PlaceRequestCoordinatesTask(MapsActivity activity) {
         this.activity = activity;
     }
 

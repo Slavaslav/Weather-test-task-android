@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getweatherdatatesttask.Place.Place;
-import com.getweatherdatatesttask.Place.PlaceGetCoordinatesTask;
+import com.getweatherdatatesttask.Place.PlaceRequestCoordinatesTask;
 import com.getweatherdatatesttask.Place.PlacesSearchAutoCompleteAdapter;
 import com.getweatherdatatesttask.Weather.Weather;
 import com.getweatherdatatesttask.Weather.WeatherJSONParser;
@@ -88,24 +88,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void showWeatherByPlace(AdapterView<?> adapterView, int position) {
-        Place place = (Place) adapterView.getItemAtPosition(position);
-        PlaceGetCoordinatesTask placeGetCoordinatesTask = new PlaceGetCoordinatesTask(MapsActivity.this);
-        placeGetCoordinatesTask.execute(place.getPlaceId());
-    }
-
-    private void hideMarker() {
-        if (marker != null && marker.isVisible()) {
-            marker.setVisible(false);
-        }
-    }
-
-    private void showMarker() {
-        if (marker != null && !marker.isVisible()) {
-            marker.setVisible(true);
-        }
-    }
-
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -118,48 +100,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onStop();
     }
 
-    private void showWeatherDataByUserLocation() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
-            mMap.setMyLocationEnabled(true);
-            hideDefaultLocationButton();
-            hideMarker();
-            LatLng latLng = getLastLocation();
-            if (latLng != null) {
-                selectCurrentLocationButton();
-                moveCamera(latLng, 15);
-                showWeather(latLng);
-            }
-        } else {
-            requestLocationPermission();
+    @Override
+    protected void onDestroy() {
+        if (weatherPopupWindow != null && weatherPopupWindow.isShowing()) {
+            weatherPopupWindow.dismiss();
         }
+        super.onDestroy();
     }
 
-    private void selectCurrentLocationButton() {
-        if (!currentLocationButton.isSelected()) {
-            currentLocationButton.setSelected(true);
-        }
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        googleApiClientIsConnected = true;
     }
 
-    private void unselectCurrentLocationButton() {
-        if (currentLocationButton.isSelected()) {
-            currentLocationButton.setSelected(false);
-        }
+    @Override
+    public void onConnectionSuspended(int i) {
+        // empty
     }
 
-    private LatLng getLastLocation() {
-        LatLng latLng = null;
-        if (googleApiClientIsConnected) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            }
-        }
-        return latLng;
-    }
-
-    private void hideDefaultLocationButton() {
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // empty
     }
 
     private boolean checkLocationPermission() {
@@ -191,7 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         initializeUIMap();
-        moveCamera(null, 0);
+        moveCamera(null, 8);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -210,14 +171,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void moveCamera(LatLng latLng, int zoom) {
         if (latLng == null) {
+            // kiev, Ukraine
             latLng = new LatLng(50.431622, 30.516645);
-            zoom = 8;
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void moveCamera(LatLng latLng) {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    private void showWeatherDataByUserLocation() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
+            mMap.setMyLocationEnabled(true);
+            hideDefaultLocationButton();
+            hideMarker();
+            LatLng latLng = getLastLocation();
+            if (latLng != null) {
+                selectCurrentLocationButton();
+                moveCamera(latLng, 15);
+                showWeather(latLng);
+            }
+        } else {
+            requestLocationPermission();
+        }
+    }
+
+    private void showWeatherByPlace(AdapterView<?> adapterView, int position) {
+        Place place = (Place) adapterView.getItemAtPosition(position);
+        PlaceRequestCoordinatesTask placeRequestCoordinatesTask = new PlaceRequestCoordinatesTask(MapsActivity.this);
+        placeRequestCoordinatesTask.execute(place.getPlaceId());
     }
 
     private void addMarkerToMapOnClick(LatLng latLng) {
@@ -235,6 +218,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         moveCamera(latLng);
         WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES);
         weatherRequestTask.execute(latLng);
+    }
+
+    private LatLng getLastLocation() {
+        LatLng latLng = null;
+        if (googleApiClientIsConnected) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (mLastLocation != null) {
+                latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            }
+        }
+        return latLng;
+    }
+
+    private void hideMarker() {
+        if (marker != null && marker.isVisible()) {
+            marker.setVisible(false);
+        }
+    }
+
+    private void showMarker() {
+        if (marker != null && !marker.isVisible()) {
+            marker.setVisible(true);
+        }
+    }
+
+    private void selectCurrentLocationButton() {
+        if (!currentLocationButton.isSelected()) {
+            currentLocationButton.setSelected(true);
+        }
+    }
+
+    private void unselectCurrentLocationButton() {
+        if (currentLocationButton.isSelected()) {
+            currentLocationButton.setSelected(false);
+        }
+    }
+
+    private void hideDefaultLocationButton() {
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     private void showPopupWindow(Weather weather) {
@@ -272,29 +295,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 weatherPopupWindow.dismiss();
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (weatherPopupWindow != null && weatherPopupWindow.isShowing()) {
-            weatherPopupWindow.dismiss();
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        googleApiClientIsConnected = true;
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // empty
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // empty
     }
 
     private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
