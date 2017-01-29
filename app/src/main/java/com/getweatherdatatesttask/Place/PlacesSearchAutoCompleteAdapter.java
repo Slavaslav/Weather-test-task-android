@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getweatherdatatesttask.HttpRequestClient;
+import com.getweatherdatatesttask.MapsActivity;
 import com.getweatherdatatesttask.R;
 
 import java.util.ArrayList;
@@ -59,9 +60,9 @@ public class PlacesSearchAutoCompleteAdapter extends BaseAdapter implements Filt
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     String getPlacesJson = HttpRequestClient.getPlacesDataByQuery(constraint.toString());
-                    if (getPlacesJson.equals("error")) {
+                    if (getPlacesJson.equals(HttpRequestClient.ERROR)) {
                         Toast toast = new Toast(context);
-                        toast.setText("Something went wrong. Please, try again");
+                        toast.setText(MapsActivity.SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN);
                         toast.setDuration(Toast.LENGTH_LONG);
                         toast.show();
                     } else {

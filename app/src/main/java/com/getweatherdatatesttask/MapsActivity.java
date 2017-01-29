@@ -42,6 +42,8 @@ import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, WeatherShowable {
 
+    public static final String SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN = "Something went wrong. Please, try again";
+    public static final String YOU_MUST_ALLOW_ACCESS_TO_GEOLOCATION_DATA = "You must allow access to geolocation data";
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private boolean googleApiClientIsConnected = false;
     private GoogleMap mMap;
@@ -142,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showWeatherDataByUserLocation();
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), "You must allow access to geolocation data", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), YOU_MUST_ALLOW_ACCESS_TO_GEOLOCATION_DATA, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -228,14 +230,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         showPopupWindow(weather);
                     } else {
                         // show error
-                        showToast("Something went wrong. Please, try again", Toast.LENGTH_LONG);
+                        showToast(SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_LONG);
                     }
                 }
             });
             weatherRequestTask.execute();
         } else {
             // show error
-            showToast("Something went wrong. Please, try again", Toast.LENGTH_LONG);
+            showToast(SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_LONG);
         }
 
     }

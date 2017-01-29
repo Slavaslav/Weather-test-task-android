@@ -11,11 +11,13 @@ import java.util.Locale;
 
 public class HttpRequestClient {
 
+    public static final String ERROR = "error";
+
     public static String getPlacesDataByQuery(String query) {
         String urlRequest = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&types=geocode&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo", query);
         String queryResponse = getJsonTextFromURL(urlRequest);
         if (queryResponse.isEmpty()) {
-            queryResponse = "error";
+            queryResponse = ERROR;
         }
         return queryResponse;
     }
