@@ -156,9 +156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                unselectCurrentLocationButton();
-                addMarkerToMapOnClick(latLng);
-                showWeather(latLng);
+                showWeather(latLng, RequestType.BY_COORDINATES);
             }
         });
     }
@@ -185,12 +183,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || !checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
             hideDefaultLocationButton();
-            hideMarker();
             LatLng latLng = getLastLocation();
             if (latLng != null) {
-                selectCurrentLocationButton();
-                moveCamera(latLng, 15);
-                showWeather(latLng);
+                showWeather(latLng, RequestType.BY_CURRENT_LOCATION);
             }
         } else {
             requestLocationPermission();
@@ -203,7 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         placeRequestCoordinatesTask.execute(place.getPlaceId());
     }
 
-    private void addMarkerToMapOnClick(LatLng latLng) {
+    private void addMarkerToMap(LatLng latLng) {
         String currentPosition = String.format(Locale.getDefault(), "%.2f, %.2f", latLng.latitude, latLng.longitude);
         if (marker == null) {
             marker = mMap.addMarker(new MarkerOptions().position(latLng));
@@ -214,10 +209,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker.setTitle(currentPosition);
     }
 
-    public void showWeather(LatLng latLng) {
-        moveCamera(latLng);
-        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES);
-        weatherRequestTask.execute(latLng);
+    public void showWeather(LatLng latLng, RequestType requestType) {
+        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES, requestType, latLng);
+        weatherRequestTask.execute();
     }
 
     private LatLng getLastLocation() {
@@ -297,19 +291,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private class WeatherRequestTask extends AsyncTask<Object, Void, Weather> {
+    private class WeatherRequestTask extends AsyncTask<Void, Void, Weather> {
 
         private HttpRequestClient.RequestType requestType;
+        private RequestType type;
+        private LatLng latLng;
 
-        WeatherRequestTask(HttpRequestClient.RequestType requestType) {
+        WeatherRequestTask(HttpRequestClient.RequestType requestType, RequestType type, LatLng latLng) {
             this.requestType = requestType;
+            this.type = type;
+            this.latLng = latLng;
         }
 
         @Override
-        protected Weather doInBackground(Object... objects) {
+        protected Weather doInBackground(Void... voids) {
             Weather weather = null;
             if (requestType == HttpRequestClient.RequestType.BY_COORDINATES) {
-                String weatherJSON = HttpRequestClient.getWeatherDataByCoordinates((LatLng) objects[0]);
+                String weatherJSON = HttpRequestClient.getWeatherDataByCoordinates(latLng);
                 // if weatherJSON is empty - something went wrong
                 if (!weatherJSON.isEmpty()) {
                     weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
@@ -322,6 +320,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
             if (weather != null) {
+                if (type == RequestType.BY_COORDINATES) {
+                    unselectCurrentLocationButton();
+                    addMarkerToMap(latLng);
+                    moveCamera(latLng);
+                } else if (type == RequestType.BY_CURRENT_LOCATION) {
+                    selectCurrentLocationButton();
+                    moveCamera(latLng, 15);
+                    hideMarker();
+                }
                 showPopupWindow(weather);
             } else {
                 // show error

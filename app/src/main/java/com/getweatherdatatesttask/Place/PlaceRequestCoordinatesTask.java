@@ -26,11 +26,11 @@ public class PlaceRequestCoordinatesTask extends AsyncTask<String, Void, LatLng>
 
     @Override
     protected void onPostExecute(LatLng latLng) {
-        showWeather(latLng);
+        showWeather(latLng, RequestType.BY_COORDINATES);
     }
 
     @Override
-    public void showWeather(LatLng latLng) {
-        activity.showWeather(latLng);
+    public void showWeather(LatLng latLng, RequestType requestType) {
+        activity.showWeather(latLng, requestType);
     }
 }
