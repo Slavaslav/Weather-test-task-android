@@ -19,11 +19,7 @@ public class HttpRequestClient {
 
     public static String getPlacesDataByQuery(String query) {
         String urlRequest = String.format("%sautocomplete/json?input=%s&types=geocode%s", GOOGLE_API_URL, query, GOOGLE_API_KEY);
-        String queryResponse = getJsonTextFromURL(urlRequest);
-        if (queryResponse.isEmpty()) {
-            queryResponse = ERROR;
-        }
-        return queryResponse;
+        return getJsonTextFromURL(urlRequest);
     }
 
     public static String getPlaceDescriptionByQuery(String query) {
