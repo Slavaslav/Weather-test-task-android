@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +24,7 @@ import com.getweatherdatatesttask.Place.Place;
 import com.getweatherdatatesttask.Place.PlaceRequestCoordinatesTask;
 import com.getweatherdatatesttask.Place.PlacesSearchAutoCompleteAdapter;
 import com.getweatherdatatesttask.Weather.Weather;
-import com.getweatherdatatesttask.Weather.WeatherJSONParser;
+import com.getweatherdatatesttask.Weather.WeatherRequestTask;
 import com.getweatherdatatesttask.Weather.WeatherShowable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -212,7 +211,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showWeather(LatLng latLng, RequestType requestType) {
-        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(requestType, latLng);
+        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(requestType, latLng, new UIupdateable() {
+
+            @Override
+            public void updateUI(Weather weather, WeatherShowable.RequestType type, LatLng latLng) {
+                if (weather != null) {
+                    if (type == WeatherShowable.RequestType.BY_COORDINATES) {
+                        unselectCurrentLocationButton();
+                        addMarkerToMap(latLng);
+                        moveCamera(latLng);
+                    } else if (type == WeatherShowable.RequestType.BY_CURRENT_LOCATION) {
+                        selectCurrentLocationButton();
+                        moveCamera(latLng, 15);
+                        hideMarker();
+                    }
+                    showPopupWindow(weather);
+                } else {
+                    // show error
+                    Toast toast = Toast.makeText(getApplicationContext(), "Something went wrong. Please, try again", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            }
+        });
         weatherRequestTask.execute();
     }
 
@@ -303,46 +323,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private class WeatherRequestTask extends AsyncTask<Void, Void, Weather> {
-
-        private final RequestType type;
-        private final LatLng latLng;
-
-        WeatherRequestTask(RequestType type, LatLng latLng) {
-            this.type = type;
-            this.latLng = latLng;
-        }
-
-        @Override
-        protected Weather doInBackground(Void... voids) {
-            Weather weather = null;
-            String weatherJSON = HttpRequestClient.getWeatherDataByCoordinates(latLng);
-            // if weatherJSON is empty - something went wrong
-            if (!weatherJSON.isEmpty()) {
-                weather = WeatherJSONParser.parseWeatherFromJson(weatherJSON);
-            }
-            return weather;
-        }
-
-        @Override
-        protected void onPostExecute(Weather weather) {
-            super.onPostExecute(weather);
-            if (weather != null) {
-                if (type == RequestType.BY_COORDINATES) {
-                    unselectCurrentLocationButton();
-                    addMarkerToMap(latLng);
-                    moveCamera(latLng);
-                } else if (type == RequestType.BY_CURRENT_LOCATION) {
-                    selectCurrentLocationButton();
-                    moveCamera(latLng, 15);
-                    hideMarker();
-                }
-                showPopupWindow(weather);
-            } else {
-                // show error
-                Toast toast = Toast.makeText(getApplicationContext(), "Something went wrong. Please, try again", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }
+    public interface UIupdateable {
+        void updateUI(Weather weather, WeatherShowable.RequestType type, LatLng latLng);
     }
 }
