@@ -211,30 +211,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showWeather(LatLng latLng, RequestType requestType) {
-        WeatherRequestTask weatherRequestTask = new WeatherRequestTask(requestType, latLng, new UIupdateable() {
-
-            @Override
-            public void updateUI(Weather weather, WeatherShowable.RequestType type, LatLng latLng) {
-                if (weather != null) {
-                    if (type == WeatherShowable.RequestType.BY_COORDINATES) {
-                        unselectCurrentLocationButton();
-                        addMarkerToMap(latLng);
-                        moveCamera(latLng);
-                    } else if (type == WeatherShowable.RequestType.BY_CURRENT_LOCATION) {
-                        selectCurrentLocationButton();
-                        moveCamera(latLng, 15);
-                        hideMarker();
+        if (latLng != null) {
+            WeatherRequestTask weatherRequestTask = new WeatherRequestTask(requestType, latLng, new UIupdateable() {
+                @Override
+                public void updateUI(Weather weather, WeatherShowable.RequestType type, LatLng latLng) {
+                    if (weather != null) {
+                        if (type == WeatherShowable.RequestType.BY_COORDINATES) {
+                            unselectCurrentLocationButton();
+                            addMarkerToMap(latLng);
+                            moveCamera(latLng);
+                        } else if (type == WeatherShowable.RequestType.BY_CURRENT_LOCATION) {
+                            selectCurrentLocationButton();
+                            moveCamera(latLng, 15);
+                            hideMarker();
+                        }
+                        showPopupWindow(weather);
+                    } else {
+                        // show error
+                        showToast("Something went wrong. Please, try again", Toast.LENGTH_LONG);
                     }
-                    showPopupWindow(weather);
-                } else {
-                    // show error
-                    Toast toast = Toast.makeText(getApplicationContext(), "Something went wrong. Please, try again", Toast.LENGTH_LONG);
-                    toast.show();
                 }
-            }
-        });
-        weatherRequestTask.execute();
+            });
+            weatherRequestTask.execute();
+        } else {
+            // show error
+            showToast("Something went wrong. Please, try again", Toast.LENGTH_LONG);
+        }
+
     }
+
+    private void showToast(String toastText, int toastLong) {
+        Toast toast = Toast.makeText(getApplicationContext(), toastText, toastLong);
+        toast.show();
+    }
+
 
     private LatLng getLastLocation() {
         LatLng latLng = null;
