@@ -78,18 +78,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         AutoCompleteTextView autoCompleteSearchPlaces = (AutoCompleteTextView) findViewById(R.id.map_search_edit_text);
-
         autoCompleteSearchPlaces.setThreshold(2);
         autoCompleteSearchPlaces.setAdapter(new PlacesSearchAutoCompleteAdapter(this));
-
         autoCompleteSearchPlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Place place = (Place) adapterView.getItemAtPosition(position);
-                PlaceGetCoordinatesTask placeGetCoordinatesTask = new PlaceGetCoordinatesTask(MapsActivity.this);
-                placeGetCoordinatesTask.execute(place.getPlaceId());
+                showWeatherByPlace(adapterView, position);
             }
         });
+    }
+
+    private void showWeatherByPlace(AdapterView<?> adapterView, int position) {
+        Place place = (Place) adapterView.getItemAtPosition(position);
+        PlaceGetCoordinatesTask placeGetCoordinatesTask = new PlaceGetCoordinatesTask(MapsActivity.this);
+        placeGetCoordinatesTask.execute(place.getPlaceId());
     }
 
     private void hideMarker() {
@@ -214,6 +216,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
+    private void moveCamera(LatLng latLng) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
     private void addMarkerToMapOnClick(LatLng latLng) {
         String currentPosition = String.format(Locale.getDefault(), "%.2f, %.2f", latLng.latitude, latLng.longitude);
         if (marker == null) {
@@ -226,6 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showWeather(LatLng latLng) {
+        moveCamera(latLng);
         WeatherRequestTask weatherRequestTask = new WeatherRequestTask(HttpRequestClient.RequestType.BY_COORDINATES);
         weatherRequestTask.execute(latLng);
     }
