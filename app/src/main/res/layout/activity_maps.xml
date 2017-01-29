@@ -18,7 +18,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/input_text_background"
         android:gravity="center_vertical"
-        android:hint="Enter text..."
+        android:hint="@string/enter_text"
         android:inputType="text"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -35,5 +35,5 @@
         android:background="@drawable/current_location_button_background_selector"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:text="Current location" />
+        android:text="@string/current_location" />
 </RelativeLayout> 
