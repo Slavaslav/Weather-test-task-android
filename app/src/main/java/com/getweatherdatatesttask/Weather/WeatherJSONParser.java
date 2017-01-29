@@ -4,19 +4,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class WeatherJSONParser {
+class WeatherJSONParser {
 
-    public static final String COORD = "coord";
-    public static final String LAT = "lat";
-    public static final String LON = "lon";
-    public static final String WEATHER = "weather";
-    public static final String MAIN = "main";
-    public static final String TEMP = "temp";
-    public static final String PRESSURE = "pressure";
-    public static final String HUMIDITY = "humidity";
-    public static final String WIND = "wind";
-    public static final String SPEED = "speed";
-    public static final String DEG = "deg";
+    private static final String COORD = "coord";
+    private static final String LAT = "lat";
+    private static final String LON = "lon";
+    private static final String WEATHER = "weather";
+    private static final String MAIN = "main";
+    private static final String TEMP = "temp";
+    private static final String PRESSURE = "pressure";
+    private static final String HUMIDITY = "humidity";
+    private static final String WIND = "wind";
+    private static final String SPEED = "speed";
+    private static final String DEG = "deg";
 
     public static Weather parseWeatherFromJson(String weatherTextJSON) {
         Weather weather = null;

@@ -10,7 +10,7 @@ public class WeatherRequestTask extends AsyncTask<Void, Void, Weather> {
 
     private final WeatherShowable.RequestType type;
     private final LatLng latLng;
-    private MapsActivity.UIupdateable updateUI;
+    private final MapsActivity.UIupdateable updateUI;
 
     public WeatherRequestTask(WeatherShowable.RequestType type, LatLng latLng, MapsActivity.UIupdateable updateUI) {
         this.type = type;

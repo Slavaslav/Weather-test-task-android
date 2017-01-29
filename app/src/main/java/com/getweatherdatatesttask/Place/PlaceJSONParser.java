@@ -11,14 +11,14 @@ import java.util.List;
 
 class PlaceJSONParser {
 
-    public static final String PREDICTIONS = "predictions";
-    public static final String DESCRIPTION = "description";
-    public static final String PLACE_ID = "place_id";
-    public static final String RESULT = "result";
-    public static final String GEOMETRY = "geometry";
-    public static final String LOCATION = "location";
-    public static final String LAT = "lat";
-    public static final String LNG = "lng";
+    private static final String PREDICTIONS = "predictions";
+    private static final String DESCRIPTION = "description";
+    private static final String PLACE_ID = "place_id";
+    private static final String RESULT = "result";
+    private static final String GEOMETRY = "geometry";
+    private static final String LOCATION = "location";
+    private static final String LAT = "lat";
+    private static final String LNG = "lng";
 
     public static List<Place> parsePlaceFromJson(String placeTextJSON) {
         List<Place> places = null;

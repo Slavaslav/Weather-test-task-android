@@ -12,9 +12,9 @@ import java.util.Locale;
 public class HttpRequestClient {
 
     public static final String ERROR = "error";
-    public static final String GOOGLE_API_URL = "https://maps.googleapis.com/maps/api/place/";
-    public static final String GOOGLE_API_KEY = "&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo";
-    public static final String WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&APPID=9d600ee30b100b0a83a006ebdedd14ad";
+    private static final String GOOGLE_API_URL = "https://maps.googleapis.com/maps/api/place/";
+    private static final String GOOGLE_API_KEY = "&key=AIzaSyByodZEsDBTC-J3brJ39JiYTkqbtJhlSKo";
+    private static final String WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&APPID=9d600ee30b100b0a83a006ebdedd14ad";
 
 
     public static String getPlacesDataByQuery(String query) {

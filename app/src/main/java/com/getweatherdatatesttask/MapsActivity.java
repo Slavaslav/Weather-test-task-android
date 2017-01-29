@@ -43,7 +43,7 @@ import java.util.Locale;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, WeatherShowable {
 
     public static final String SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN = "Something went wrong. Please, try again";
-    public static final String YOU_MUST_ALLOW_ACCESS_TO_GEOLOCATION_DATA = "You must allow access to geolocation data";
+    private static final String YOU_MUST_ALLOW_ACCESS_TO_GEOLOCATION_DATA = "You must allow access to geolocation data";
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private boolean googleApiClientIsConnected = false;
     private GoogleMap mMap;
