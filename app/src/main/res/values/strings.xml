@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GetWeatherDataTestTask</string>
     <string name="title_activity_maps">Map</string>
-    <string name="enter_text">Enter text...</string>
+    <string name="enter_text">Enter text…</string>
     <string name="current_location">Current location</string>
     <string name="location">Location:</string>
     <string name="weather">Weather</string>

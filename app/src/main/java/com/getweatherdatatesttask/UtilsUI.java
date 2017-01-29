@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-public class UtilsUI {
+class UtilsUI {
 
     public static void hideSoftKeyboard(MapsActivity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
