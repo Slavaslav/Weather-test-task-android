@@ -93,7 +93,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 clearAutoCompleteSearch();
                 hideSoftKeyboard();
-                showWeatherByPlace(adapterView, position);
+                if (Utils.isNetworkConnected(MapsActivity.this)) {
+                    showWeatherByPlace(adapterView, position);
+                } else {
+                    Utils.showToast(MapsActivity.this, INTERNET_CONNECTION_IS_NOT_ESTABLISHED, Toast.LENGTH_SHORT);
+                }
             }
         });
         autoCompleteSearchPlaces.addTextChangedListener(new TextWatcher() {
