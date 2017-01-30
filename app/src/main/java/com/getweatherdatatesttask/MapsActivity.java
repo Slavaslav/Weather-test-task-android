@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ import java.util.Locale;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, WeatherShowable {
 
     public static final String SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN = "Something went wrong. Please, try again";
+    public static final String INTERNET_CONNECTION_IS_NOT_ESTABLISHED = "Internet connection is not established";
     private static final String YOU_MUST_ALLOW_ACCESS_TO_GEOLOCATION_DATA = "You must allow access to geolocation data";
     private static final int PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private boolean googleApiClientIsConnected = false;
@@ -62,7 +65,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showWeatherDataByUserLocation();
+                if (Utils.isNetworkConnected(MapsActivity.this)) {
+                    showWeatherDataByUserLocation();
+                } else {
+                    Utils.showToast(MapsActivity.this, INTERNET_CONNECTION_IS_NOT_ESTABLISHED, Toast.LENGTH_SHORT);
+                }
             }
         });
 
@@ -87,6 +94,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 clearAutoCompleteSearch();
                 hideSoftKeyboard();
                 showWeatherByPlace(adapterView, position);
+            }
+        });
+        autoCompleteSearchPlaces.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!Utils.isNetworkConnected(MapsActivity.this)) {
+                    Utils.showToast(MapsActivity.this, INTERNET_CONNECTION_IS_NOT_ESTABLISHED, Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -159,7 +184,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                showWeather(latLng, RequestType.BY_COORDINATES);
+                if (Utils.isNetworkConnected(MapsActivity.this)) {
+                    showWeather(latLng, RequestType.BY_COORDINATES);
+                } else {
+                    Utils.showToast(MapsActivity.this, INTERNET_CONNECTION_IS_NOT_ESTABLISHED, Toast.LENGTH_SHORT);
+                }
             }
         });
     }
@@ -230,23 +259,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         showPopupWindow(weather);
                     } else {
                         // show error
-                        showToast(SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_LONG);
+                        Utils.showToast(MapsActivity.this, SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_SHORT);
                     }
                 }
             });
             weatherRequestTask.execute();
         } else {
             // show error
-            showToast(SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_LONG);
+            Utils.showToast(MapsActivity.this, SOMETHING_WENT_WRONG_PLEASE_TRY_AGAIN, Toast.LENGTH_SHORT);
         }
 
     }
-
-    private void showToast(String toastText, int toastLong) {
-        Toast toast = Toast.makeText(getApplicationContext(), toastText, toastLong);
-        toast.show();
-    }
-
 
     private LatLng getLastLocation() {
         LatLng latLng = null;
@@ -326,7 +349,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void hideSoftKeyboard() {
-        UtilsUI.hideSoftKeyboard(this);
+        Utils.hideSoftKeyboard(this);
     }
 
     private void clearAutoCompleteSearch() {
